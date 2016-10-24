@@ -1,0 +1,16 @@
+#!/bin/bash
+
+MYID=1
+CONTAINER_NAME=zookeeper_${MYID}
+
+ZOOKEEPER_NODE_1=172.101.42.1
+ZOOKEEPER_NODE_2=172.102.42.1
+ZOOKEEPER_NODE_3=172.103.42.1
+#ZOOKEEPER_NODE_1=192.168.11.101
+#ZOOKEEPER_NODE_2=192.168.11.102
+#ZOOKEEPER_NODE_3=192.168.11.103
+
+
+VOLUMES_OPTS="-v `pwd`/volumes/var/log:/var/log -v `pwd`/volumes/var/lib/zookeeper:/var/lib/zookeeper"
+
+

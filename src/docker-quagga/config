@@ -1,0 +1,7 @@
+#!/bin/bash
+
+CONTAINER_NAME=docker-quagga
+
+VOLUMES_OPTS="-v `pwd`/volumes/var/log:/var/log"
+
+

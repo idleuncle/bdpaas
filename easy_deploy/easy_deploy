@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# 本脚本是部署工作的启动脚本。
+# 工作起点是已登录控制机，安装包已拷贝至控制机。已取得集群所有节点的主机IP及root密码。
+
+# 控制机工作目录，缺省是本启动脚本所有目录。
+readonly MASTER_ROOTPATH=$(cd `dirname $0`; pwd) 
+echo "Master Root Path: " $MASTER_ROOTPATH
+SCRIPT_NAME=`basename $0`
+
+cd $MASTER_ROOTPATH
+. ./scripts/utils.sh
+. ./config.sh
+. ./scripts/cmd_base.sh
+. ./scripts/cmd_ssh.sh
+. ./scripts/cmd_docker.sh
+. ./scripts/cmd_registry.sh
+
+# -------- cmd_usage() --------
+function cmd_usage() {
+    echo
+    echo "Usage: $SCRIPT_NAME <command>"
+    echo
+    echo "    commands: list, base, ssh, docker"
+    echo
+    echo "Use $SCRIPT_NAME <command> --help to find how to use it."
+    echo
+}
+
+# -------- cmd_list() --------
+function cmd_list() {
+    for node in $CLUSTER_NODES; do
+        echo $node
+    done
+   #notify $@ 
+}
+
+while true; do
+    CMD=$1
+    case $CMD in
+        list)
+            FUNCTION=cmd_list
+            shift;
+            break;;
+        base)
+            FUNCTION=cmd_base
+            shift;
+            break;;
+        ssh)
+            FUNCTION=cmd_ssh
+            shift;
+            break;;
+        docker)
+            FUNCTION=cmd_docker
+            shift;
+            break;;
+        registry)
+            FUNCTION=cmd_registry
+            shift;
+            break;;
+        *)
+            NODES=$1
+            if [ "$NODES" == "*" ]; then
+                NODES=$CLUSTER_NODES
+            else
+                NODES=`echo $NODES | tr -d ","`
+            fi
+            echo "NODES:" $NODES
+            shift;
+            continue;
+
+            FUNCTION=cmd_usage
+            break;;
+    esac
+done
+
+${FUNCTION} $@
+
+
